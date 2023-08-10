@@ -4,51 +4,79 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[]
+  | Json[];
 
 export interface Database {
   public: {
     Tables: {
-      tweets: {
+      profiles: {
         Row: {
-          created_at: string | null
-          id: string
-          title: string | null
-          user_id: string
-        }
+          avatar_url: string;
+          id: string;
+          name: string;
+          username: string;
+        };
         Insert: {
-          created_at?: string | null
-          id?: string
-          title?: string | null
-          user_id: string
-        }
+          avatar_url: string;
+          id: string;
+          name: string;
+          username: string;
+        };
         Update: {
-          created_at?: string | null
-          id?: string
-          title?: string | null
-          user_id?: string
-        }
+          avatar_url?: string;
+          id?: string;
+          name?: string;
+          username?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "tweets_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
+            foreignKeyName: "profiles_id_fkey";
+            columns: ["id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
           }
-        ]
-      }
-    }
+        ];
+      };
+      tweets: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          title: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          title?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          title?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tweets_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Enums: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
+      [_ in never]: never;
+    };
+  };
 }
