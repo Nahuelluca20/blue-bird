@@ -14,9 +14,18 @@ export default async function Home() {
   if (!session) {
     redirect("/login");
   }
-  const { data: tweets } = await supabase
+  const { data } = await supabase
     .from("tweets")
-    .select("*, profiles(*)");
+    .select("*, profiles(*), likes(*)");
+
+  const tweets =
+    data?.map((tweet) => ({
+      ...tweet,
+      user_has_liked_tweet: tweet.likes.find(
+        (like) => like.user_id === session.user.id
+      ),
+      likes: tweet.likes.length,
+    })) ?? [];
 
   return (
     <>
@@ -29,7 +38,7 @@ export default async function Home() {
               {tweet.profiles?.name} {tweet.profiles?.username}
             </p>
             <p>{tweet.title}</p>
-            <Likes />
+            <Likes tweet={tweet} />
           </div>
         ))
       ) : (
