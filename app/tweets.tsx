@@ -1,7 +1,9 @@
 "use client";
 
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Likes from "./likes";
-import { experimental_useOptimistic as useOptimistic } from "react";
+import { useEffect, experimental_useOptimistic as useOptimistic } from "react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   tweets: TweetWithAuthor[];
@@ -16,10 +18,34 @@ const Tweets: React.FC<Props> = ({ tweets }) => {
     const index = newOptimisticTweets.findIndex(
       (tweet) => tweet.id === newTweet.id
     );
-    
+
     newOptimisticTweets[index] = newTweet;
     return newOptimisticTweets;
   });
+
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    const channel = supabase.realtime
+      .channel("tweets")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "tweets",
+        },
+        (payload) => {
+          router.refresh();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, router]);
 
   return (
     <>
