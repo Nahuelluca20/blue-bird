@@ -6,6 +6,8 @@ interface Props {
   user: User;
 }
 
+export const dynamic = "force-dynamic";
+
 const newTweet: React.FC<Props> = ({ user }) => {
   const addTweet = async (formData: FormData) => {
     "use server";
